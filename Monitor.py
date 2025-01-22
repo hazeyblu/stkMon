@@ -38,7 +38,7 @@ nifty_last_price = nifty.history(period="1d")['Close'].iloc[-1]
 nifty_returns = (nifty_last_price - nifty_monday_open) / nifty_monday_open * 100
 
 # Add Nifty 500 data to the table with a blank row for readability
-data.append([None, None, None, None])  # Blank row
+data.append(["", None, None, None])  # Blank row
 data.append(["Nifty 500", nifty_monday_open, nifty_last_price, nifty_returns])  # Replace ^CRSLDX with Nifty 500
 
 # Create DataFrame
@@ -63,4 +63,4 @@ alpha_color = "green" if alpha >= 0 else "red"
 st.markdown(f"<h1 style='text-align: center; color: {alpha_color};'>Alpha: {alpha:.2f}%</h1>", unsafe_allow_html=True)
 
 # Display the table with colored returns
-st.markdown(df.to_html(escape=False), unsafe_allow_html=True)
+st.markdown(df.to_html(index=False, escape=False), unsafe_allow_html=True)
