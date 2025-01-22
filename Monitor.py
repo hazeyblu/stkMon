@@ -42,15 +42,15 @@ data.append([None, None, None, None])  # Blank row
 data.append(["Nifty 500", nifty_monday_open, nifty_last_price, nifty_returns])  # Replace ^CRSLDX with Nifty 500
 
 # Create DataFrame
-df = pd.DataFrame(data, columns=["Ticker", "Buy", "Last", "Returns (%)"])
+df = pd.DataFrame(data, columns=["Ticker", "Open", "Last", "Returns (%)"])
 
 # Calculate Alpha (before adding HTML styling)
 basket_returns = df.iloc[:-2]["Returns (%)"].mean()  # Exclude Nifty 500 and blank row
 alpha = basket_returns - nifty_returns
 
 # Format the DataFrame (add HTML styling after calculating alpha)
-df["Monday Open"] = df["Monday Open"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
-df["Last Price"] = df["Last Price"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
+df["Open"] = df["Open"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
+df["Last"] = df["Last"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
 df["Returns (%)"] = df["Returns (%)"].apply(
     lambda x: f"<span style='color: {'green' if x >= 0 else 'red'};'>{x:.2f}%</span>" if pd.notnull(x) else ""
 )
