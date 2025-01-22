@@ -56,7 +56,7 @@ df["Returns (%)"] = df["Returns (%)"].apply(
 )
 
 # Streamlit App
-st.markdown("<h1 style='text-align: center;'>Stock Returns Analysis</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>INTRAWEEK</h1>", unsafe_allow_html=True)
 
 # Display Alpha with color (green for positive, red for negative)
 alpha_color = "green" if alpha >= 0 else "red"
