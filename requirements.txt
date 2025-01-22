@@ -1,0 +1,9 @@
+#
+####### Streamlit requirements.txt #######
+#
+###### Requirements without Version Specifiers ######
+streamlit
+yfinance
+pandas
+datetime
+#
