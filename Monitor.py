@@ -42,25 +42,32 @@ data.append(["", None, None, None])  # Blank row
 data.append(["Nifty 500", nifty_monday_open, nifty_last_price, nifty_returns])  # Replace ^CRSLDX with Nifty 500
 
 # Create DataFrame
-df = pd.DataFrame(data, columns=["Ticker", "Open", "Last", "Returns (%)"])
+df = pd.DataFrame(data, columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"])
 
 # Calculate Alpha (before adding HTML styling)
 basket_returns = df.iloc[:-2]["Returns (%)"].mean()  # Exclude Nifty 500 and blank row
 alpha = basket_returns - nifty_returns
 
 # Format the DataFrame (add HTML styling after calculating alpha)
-df["Open"] = df["Open"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
-df["Last"] = df["Last"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
+df["Monday Open"] = df["Monday Open"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
+df["Last Price"] = df["Last Price"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
 df["Returns (%)"] = df["Returns (%)"].apply(
     lambda x: f"<span style='color: {'green' if x >= 0 else 'red'};'>{x:.2f}%</span>" if pd.notnull(x) else ""
 )
 
 # Streamlit App
-st.markdown("<h1 style='text-align: center;'>INTRAWEEK</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Stock Returns Analysis</h1>", unsafe_allow_html=True)
 
 # Display Alpha with color (green for positive, red for negative)
 alpha_color = "green" if alpha >= 0 else "red"
 st.markdown(f"<h1 style='text-align: center; color: {alpha_color};'>Alpha: {alpha:.2f}%</h1>", unsafe_allow_html=True)
 
-# Display the table with colored returns
-st.markdown(df.to_html(index=False, escape=False), unsafe_allow_html=True)
+# Display the table with colored returns (hide index and center the table)
+st.markdown(
+    f"""
+    <div style="display: flex; justify-content: center;">
+        {df.to_html(index=False, escape=False)}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
