@@ -61,7 +61,7 @@ st.markdown("<h3 style='text-align: center;'>INTRAWEEK</h3>", unsafe_allow_html=
 # Display Basket Returns with color (green for positive, red for negative)
 basket_color = "green" if basket_returns >= 0 else "red"
 st.markdown(
-    f"<p style='text-align: center; color: {basket_color}; font-size: medium;'>Basket Returns: {basket_returns:.2f}%</p>",
+    f"<h3 style='text-align: center; color: {basket_color};'>Basket Returns: {basket_returns:.2f}%</h3>",
     unsafe_allow_html=True
 )
 
