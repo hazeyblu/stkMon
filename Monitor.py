@@ -38,7 +38,7 @@ nifty_last_price = nifty.history(period="1d")['Close'].iloc[-1]
 nifty_returns = (nifty_last_price - nifty_monday_open) / nifty_monday_open * 100
 
 # Add Nifty 500 data to the table with a blank row for readability
-data.append([None, None, None, None])  # Blank row
+data.append(["", None, None, None])  # Blank row
 data.append(["Nifty 500", nifty_monday_open, nifty_last_price, nifty_returns])  # Replace ^CRSLDX with Nifty 500
 
 # Create DataFrame
