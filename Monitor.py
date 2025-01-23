@@ -44,7 +44,7 @@ data.append(["Nifty 500", nifty_monday_open, nifty_last_price, nifty_returns])  
 # Create DataFrame
 df = pd.DataFrame(data, columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"])
 
-# Calculate Alpha (before adding HTML styling)
+# Calculate Basket Returns (before adding HTML styling)
 basket_returns = df.iloc[:-2]["Returns (%)"].mean()  # Exclude Nifty 500 and blank row
 alpha = basket_returns - nifty_returns
 
@@ -56,7 +56,7 @@ df["Returns (%)"] = df["Returns (%)"].apply(
 )
 
 # Streamlit App
-st.markdown("<h1 style='text-align: center;'>INTRAWEEK</h1>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center;'>INTRAWEEK</h3>", unsafe_allow_html=True)
 
 # Display Basket Returns with color (green for positive, red for negative)
 basket_color = "green" if basket_returns >= 0 else "red"
