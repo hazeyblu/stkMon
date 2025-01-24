@@ -67,8 +67,8 @@ df["Returns (%)"] = df["Returns (%)"].apply(
 )
 
 # Streamlit App
-# 1. Intraweek Header
-st.markdown("<h3 style='text-align: center;'>INTRAWEEK</h3>", unsafe_allow_html=True)
+# 1. Intraweek Header (Burgundy color)
+st.markdown("<h3 style='text-align: center; color: #800020;'>INTRAWEEK</h3>", unsafe_allow_html=True)
 
 # 2. Alpha
 alpha_color = "green" if alpha >= 0 else "red"
@@ -77,11 +77,17 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 3. Table
+# 3. Table (with Intraweek row highlighted in pale yellow)
+# Add a pale yellow background to the Intraweek row
+df_styled = df.style.apply(
+    lambda x: ["background-color: #FFFFE0" if x.name == 0 else "" for _ in x], axis=1
+)
+
+# Display the table
 st.markdown(
     f"""
     <div style="display: flex; justify-content: center;">
-        {df.to_html(index=False, escape=False, justify='center')}
+        {df_styled.to_html(index=False, escape=False, justify='center')}
     </div>
     """,
     unsafe_allow_html=True
