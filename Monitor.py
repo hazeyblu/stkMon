@@ -26,7 +26,7 @@ for ticker in tickers:
         last_price = stock.history(period="1d")['Close'].iloc[-1]
         returns = (last_price - monday_open) / monday_open * 100
         display_ticker = ticker.replace(".NS", "")  # Remove .NS from ticker
-        data.append([display_ticker, monday_open, last_price, returns])
+        data.append([display_ticker, monday_open, last_price, f"{returns:.2f}%"])
     except Exception as e:
         st.warning(f"Error fetching data for {ticker}: {e}")
 
@@ -38,7 +38,7 @@ nifty_last_price = nifty.history(period="1d")['Close'].iloc[-1]
 nifty_returns = (nifty_last_price - nifty_monday_open) / nifty_monday_open * 100
 
 # Calculate Basket Returns (Intraweek)
-basket_returns = pd.DataFrame(data, columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"])["Returns (%)"].mean()
+basket_returns = pd.DataFrame(data, columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"])["Returns (%)"].str.rstrip('%').astype(float).mean()
 alpha = basket_returns - nifty_returns
 
 # Create a new DataFrame with the desired structure
@@ -59,7 +59,11 @@ df = pd.DataFrame(new_data, columns=["Ticker", "Monday Open", "Last Price", "Ret
 df["Monday Open"] = df["Monday Open"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
 df["Last Price"] = df["Last Price"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
 df["Returns (%)"] = df["Returns (%)"].apply(
-    lambda x: f"<span style='color: {'green' if float(x.strip('%')) >= 0 else 'red'}; text-align: right; display: block;'>{x}</span>" if pd.notnull(x) and x != "" else ""
+    lambda x: (
+        f"<span style='color: {'green' if float(x.strip('%')) >= 0 else 'red'}; text-align: right; display: block;'>{x}</span>"
+        if pd.notnull(x) and isinstance(x, str) and x.strip() != ""
+        else ""
+    )
 )
 
 # Streamlit App
