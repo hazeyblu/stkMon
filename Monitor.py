@@ -77,18 +77,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 3. Table (with Intraweek row highlighted in #24DEBC and black font)
-# Add a background color to the Intraweek row and set font color to black
+# 3. Table (with Intraweek row highlighted in #585858 and white font)
+# Add a background color to the Intraweek row and set font color to white
 df_styled = df.style.apply(
-    lambda x: ["background-color: #24DEBC; color: black;" if x.name == 0 else "" for _ in x], axis=1
+    lambda x: ["background-color: #585858; color: white;" if x.name == 0 else "" for _ in x], axis=1
 )
 
-# Display the table
-st.markdown(
-    f"""
-    <div style="display: flex; justify-content: center;">
-        {df_styled.to_html(index=False, escape=False, justify='center')}
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# Display the table without extra <div> tags
+st.write(df_styled.to_html(index=False, escape=False, justify='center'), unsafe_allow_html=True)
