@@ -83,5 +83,12 @@ df_styled = df.style.apply(
     lambda x: ["background-color: #585858; color: white;" if x.name == 0 else "" for _ in x], axis=1
 )
 
-# Display the table without extra <div> tags
-st.write(df_styled.to_html(index=False, escape=False, justify='center'), unsafe_allow_html=True)
+# Display the table centered on the page
+st.markdown(
+    f"""
+    <div style="display: flex; justify-content: center;">
+        {df_styled.to_html(index=False, escape=False, justify='center')}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
