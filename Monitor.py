@@ -37,40 +37,33 @@ nifty_monday_open = nifty_hist.loc[monday.strftime('%Y-%m-%d')]['Open']
 nifty_last_price = nifty.history(period="1d")['Close'].iloc[-1]
 nifty_returns = (nifty_last_price - nifty_monday_open) / nifty_monday_open * 100
 
-# Add Nifty 500 data to the table with a blank row for readability
-data.append(["", None, None, None])  # Blank row
-data.append(["Nifty 500", nifty_monday_open, nifty_last_price, nifty_returns])  # Replace ^CRSLDX with Nifty 500
-
-# Create DataFrame
-df = pd.DataFrame(data, columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"])
-
-# Calculate Basket Returns (before adding HTML styling)
-basket_returns = df.iloc[:-2]["Returns (%)"].mean()  # Exclude Nifty 500 and blank row
+# Calculate Basket Returns (Intraweek)
+basket_returns = pd.DataFrame(data, columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"])["Returns (%)"].mean()
 alpha = basket_returns - nifty_returns
 
-# Format the DataFrame (add HTML styling after calculating alpha)
+# Create a new DataFrame with the desired structure
+# Add Intraweek (Basket Returns) and Nifty 500 at the top
+new_data = [
+    ["Intraweek", None, None, f"{basket_returns:.2f}%"],  # Intraweek row
+    ["Nifty 500", nifty_monday_open, nifty_last_price, f"{nifty_returns:.2f}%"],  # Nifty 500 row
+    ["", None, None, None],  # Blank row
+]
+
+# Add individual stock performances
+new_data.extend(data)
+
+# Create DataFrame
+df = pd.DataFrame(new_data, columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"])
+
+# Format the DataFrame (add HTML styling)
 df["Monday Open"] = df["Monday Open"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
 df["Last Price"] = df["Last Price"].apply(lambda x: f"{x:.2f}" if pd.notnull(x) else "")
 df["Returns (%)"] = df["Returns (%)"].apply(
-    lambda x: f"<span style='color: {'green' if x >= 0 else 'red'}; text-align: right; display: block;'>{x:.2f}%</span>" if pd.notnull(x) else ""
+    lambda x: f"<span style='color: {'green' if float(x.strip('%')) >= 0 else 'red'}; text-align: right; display: block;'>{x}</span>" if pd.notnull(x) and x != "" else ""
 )
 
 # Streamlit App
 st.markdown("<h3 style='text-align: center;'>INTRAWEEK</h3>", unsafe_allow_html=True)
-
-# Display Basket Returns with color (green for positive, red for negative)
-basket_color = "green" if basket_returns >= 0 else "red"
-st.markdown(
-    f"<h3 style='text-align: center; color: {basket_color};'>Basket Returns: {basket_returns:.2f}%</h3>",
-    unsafe_allow_html=True
-)
-
-# Display Alpha with color (green for positive, red for negative)
-alpha_color = "green" if alpha >= 0 else "red"
-st.markdown(
-    f"<h1 style='text-align: center; color: {alpha_color};'>Alpha: {alpha:.2f}%</h1>",
-    unsafe_allow_html=True
-)
 
 # Display the table with colored returns (hide index, center the table, and align headers)
 st.markdown(
@@ -79,5 +72,12 @@ st.markdown(
         {df.to_html(index=False, escape=False, justify='center')}
     </div>
     """,
+    unsafe_allow_html=True
+)
+
+# Display Alpha with color (green for positive, red for negative)
+alpha_color = "green" if alpha >= 0 else "red"
+st.markdown(
+    f"<h1 style='text-align: center; color: {alpha_color};'>Alpha: {alpha:.2f}%</h1>",
     unsafe_allow_html=True
 )
