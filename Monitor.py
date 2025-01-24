@@ -83,7 +83,7 @@ df_styled = df.style.apply(
     lambda x: ["background-color: #585858; color: white;" if x.name == 0 else "" for _ in x], axis=1
 )
 
-# Display the table centered on the page
+# Display the table without index numbers
 st.markdown(
     f"""
     <div style="display: flex; justify-content: center;">
