@@ -81,14 +81,15 @@ st.markdown(
 # Add a background color to the Intraweek row and set font color to white
 df_styled = df.style.apply(
     lambda x: ["background-color: #585858; color: white;" if x.name == 0 else "" for _ in x], axis=1
-).set_properties(**{'text-align': 'center'})  # Center-align all cells
+).set_properties(**{'text-align': 'center'}).hide_index()  # Hide index and center-align text
 
-# Display the table without index numbers
-st.markdown(
+# Display the table without index numbers and centered
+st.write(
     f"""
-    <div style="display: flex; justify-content: center;">
-        {df_styled.to_html(index=False, escape=False)}
-    </div>
+    <style>
+        .stTable {{ margin: 0 auto; }}
+    </style>
+    {df_styled.to_html(escape=False)}
     """,
     unsafe_allow_html=True
 )
