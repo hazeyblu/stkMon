@@ -88,7 +88,6 @@ st.markdown(
     f"""
     <div style="display: flex; justify-content: center;">
         {df_styled.to_html(index=False, escape=False, justify='center')}
-    </div>
     """,
     unsafe_allow_html=True
 )
