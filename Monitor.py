@@ -77,10 +77,10 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 3. Table (with Intraweek row highlighted in pale yellow)
-# Add a pale yellow background to the Intraweek row
+# 3. Table (with Intraweek row highlighted in #24DEBC and black font)
+# Add a background color to the Intraweek row and set font color to black
 df_styled = df.style.apply(
-    lambda x: ["background-color: #FFFFE0" if x.name == 0 else "" for _ in x], axis=1
+    lambda x: ["background-color: #24DEBC; color: black;" if x.name == 0 else "" for _ in x], axis=1
 )
 
 # Display the table
