@@ -109,7 +109,7 @@ if last_refresh_date is None or last_refresh_date.date() != current_monday:
 
 
 # Function to prepare data for the table
-@st.cache_data(ttl=60)  # Cache the table and update it every 60 seconds
+# @st.cache_data(ttl=60)  # Cache the table and update it every 60 seconds
 def prepare_table_data():
     data = []
     for ticker in tickers:
