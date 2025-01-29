@@ -3,7 +3,6 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import os
-# from streamlit_extras.app_refresh import st_autorefresh
 
 
 # File to save Monday open prices
@@ -67,7 +66,7 @@ def fetch_monday_open_price(ticker):
         friday = monday - timedelta(days=3)
         data = yf.download(ticker, start=friday, end=monday)
         if not data.empty:
-            return data["Open"].iloc[0].iloc[0]
+            return data["Open"].iloc[0]
     except Exception as e:
         st.error(f"Error fetching Monday open price for {ticker}: {e}")
     return None
@@ -86,7 +85,7 @@ def fetch_last_price(ticker):
     try:
         data = yf.download(ticker, period="1d", interval="1d")
         if not data.empty:
-            return data["Close"].iloc[0].iloc[0]
+            return data["Close"].iloc[0]
     except Exception as e:
         st.error(f"Error fetching latest price for {ticker}: {e}")
     return None
@@ -154,44 +153,21 @@ if last_refresh_date is None or last_refresh_date.date() != current_monday:
         save_monday_open_prices(monday_open_prices, today)
 
 
-# Function to prepare data for the table
-def prepare_table_data():
-    """
-    Prepare stock data for display in a table, including returns and alpha calculation.
-    
-    Returns:
-        pd.DataFrame: Dataframe with stock details.
-        float: Alpha value.
-    """
-    data = []
-    for ticker in tickers:
-        last_price = fetch_last_price(f"{ticker}.NS")
-        monday_open = monday_open_prices.get(ticker)
-        if monday_open is not None and last_price is not None:
-            returns = round(((last_price - monday_open) / monday_open) * 100, 2)
-            data.append([ticker, round(monday_open, 2), round(last_price, 2), returns])
-    
-    nifty_last_price = fetch_last_price(nifty_symbol)
-    nifty_monday_open = monday_open_prices.get(nifty_symbol)
-    nifty_returns = round((nifty_last_price - nifty_monday_open) / nifty_monday_open * 100, 2) if nifty_monday_open and nifty_last_price else None
-    
-    basket_returns = pd.DataFrame(data, columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"])["Returns (%)"].mean() if data else 0
-    alpha = basket_returns - (nifty_returns if nifty_returns is not None else 0)
-    
-    display_alpha(alpha)
-    return pd.DataFrame(data, columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"]), alpha
-
-
-# Get the table data
+# Prepare data for the table
 df, alpha = prepare_table_data()
+
+summary_data = [["Intraweek", 0, 0, round(alpha, 2)],
+                ["Nifty 500", round(monday_open_prices.get(nifty_symbol, 0), 2),
+                 round(fetch_last_price(nifty_symbol) or 0, 2),
+                 round(alpha, 2)]]
+
+df = pd.DataFrame(summary_data + df.values.tolist(), columns=["Ticker", "Monday Open", "Last Price", "Returns (%)"])
+
 df["Monday Open"] = df["Monday Open"].apply(lambda x: f"{x:.2f}" if x is not None else None)
 df["Last Price"] = df["Last Price"].apply(lambda x: f"{x:.2f}" if x is not None else None)
-df["Returns (%)"] = df["Returns (%)"].apply(lambda x: f"{x:.2f}%" if x is not None else None)
+df["Returns (%)"] = df["Returns (%)"].apply(lambda x: f"{float(x):.2f}%" if x is not None else None)
 
 blank_row = pd.DataFrame([["", "", "", ""]], columns=df.columns)
 df = pd.concat([df.iloc[:2], blank_row, df.iloc[2:]], ignore_index=True)
 
 st.dataframe(df.style.map(color_returns, subset=["Returns (%)"]), use_container_width=True, hide_index=True)
-
-# refresh_interval = st.slider("Refresh Interval - Minutes", min_value=1, max_value=60, value=5)
-# st_autorefresh(interval=refresh_interval * 60000, key="refresh")
