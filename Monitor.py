@@ -3,7 +3,7 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import os
-from streamlit_extras.app_refresh import st_autorefresh
+# from streamlit_extras.app_refresh import st_autorefresh
 
 
 # File to save Monday open prices
@@ -193,5 +193,5 @@ df = pd.concat([df.iloc[:2], blank_row, df.iloc[2:]], ignore_index=True)
 
 st.dataframe(df.style.map(color_returns, subset=["Returns (%)"]), use_container_width=True, hide_index=True)
 
-refresh_interval = st.slider("Refresh Interval - Minutes", min_value=1, max_value=60, value=5)
-st_autorefresh(interval=refresh_interval * 60000, key="refresh")
+# refresh_interval = st.slider("Refresh Interval - Minutes", min_value=1, max_value=60, value=5)
+# st_autorefresh(interval=refresh_interval * 60000, key="refresh")
