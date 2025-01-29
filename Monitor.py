@@ -94,18 +94,21 @@ last_refresh_date = next(iter(monday_open_data.values()), {}).get("Refresh Date"
 if last_refresh_date is None or last_refresh_date.date() != current_monday:
     new_monday_open_prices = {}
     for ticker in tickers:
-        monday_open = fetch_monday_open_price(f"{ticker}.NS")
-        if monday_open is not None:
-            new_monday_open_prices[ticker] = monday_open
+        # Only fetch the Monday open price if it's not already in the file
+        if ticker not in monday_open_prices:
+            monday_open = fetch_monday_open_price(f"{ticker}.NS")
+            if monday_open is not None:
+                new_monday_open_prices[ticker] = monday_open
 
-    # Fetch and save Nifty 500 Monday open price
-    nifty_monday_open = fetch_monday_open_price(nifty_symbol)
-    if nifty_monday_open is not None:
-        new_monday_open_prices[nifty_symbol] = nifty_monday_open
+    # Fetch and save Nifty 500 Monday open price if it's not already in the file
+    if nifty_symbol not in monday_open_prices:
+        nifty_monday_open = fetch_monday_open_price(nifty_symbol)
+        if nifty_monday_open is not None:
+            new_monday_open_prices[nifty_symbol] = nifty_monday_open
 
-    if new_monday_open_prices:  # Save only if data is fetched
+    if new_monday_open_prices:  # Save only if new data is fetched
         save_monday_open_prices(new_monday_open_prices, today)
-        monday_open_prices = new_monday_open_prices
+        monday_open_prices.update(new_monday_open_prices)  # Update the dictionary with new prices
 
 
 # Function to prepare data for the table
