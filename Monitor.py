@@ -98,7 +98,7 @@ if last_refresh_date is None or last_refresh_date.date() != current_monday:
     new_monday_open_prices = {}
     for ticker in tickers:
         # Only fetch the Monday open price if it's not already in the file
-        if f"{ticker}.NS" not in monday_open_prices:
+        if ticker not in monday_open_prices:
             monday_open = fetch_monday_open_price(f"{ticker}.NS")
             if monday_open is not None:
                 new_monday_open_prices[ticker] = monday_open
