@@ -131,7 +131,7 @@ def prepare_table_data():
 
     # Fetch Nifty 500 data
     nifty_last_price = fetch_last_price(nifty_symbol)
-    nifty_monday_open = monday_open_prices.get(nifty_symbol)
+    nifty_monday_open = float(monday_open_prices.get(nifty_symbol))
     if nifty_monday_open is not None and nifty_last_price is not None:
         nifty_returns = round((nifty_last_price - nifty_monday_open) / nifty_monday_open * 100, 2)
     else:
